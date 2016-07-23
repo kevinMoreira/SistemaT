@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+	<script type="text/javascript" src="js/ajax.js"></script>
+	<meta charset="UTF-8">
+	<title>	Relatório personalizado</title>
+</head>
+<body onload="pegarVal()">
+	
+</body>
+</html>
+<script type="text/javascript">
+
+	/*var p = 'action=obterProximosDoVencimento';
+	//p+='&nome=' + nome;
+	p+='&meses='+vencimento;
+	ajax.Request(p);*/
+	function pegarVal(){
+		var a = prompt("Digite o primeiro valor");
+		var b = prompt("Digite o segundo valor");
+
+
+		var ajax = new Ajax('POST', './php/Relatorios/relatorioPersonalizado.php', false);
+		var ajax = new Ajax('POST', 'relatorioPersonalizado.php', false);
+		var dt = 'action=gerarRelatorio';
+		dt+="&posta="+a;
+		dt+="&postb="+b;
+		alert(dt);
+//		var p+="&data2="+b;
+
+		ajax.Request(dt);
+		alert(ajax.getResponseText());
+
+		//$.pegarVal('./php/Relatorios/relatorioPersonalizado.php',{posta:a,postb:b},function(){});
+		// window.location.assign("./php/Relatorios/relatorioPersonalizado.php");
+	}
+
+</script>
