@@ -123,11 +123,11 @@ while ($row = mysql_fetch_row($sql2)) {
 </body>
 </html>
 <?php
- $html = ob_get_clean();
+// $html = ob_get_clean();
  //converter o conteudo para UTF
- $html = utf8_encode($html);
+// $html = utf8_encode($html);
  //incluir a classe MPDF
- include("mpdf60/mpdf.php");
+// include("mpdf60/mpdf.php");
  //criar o objeto
 /* $mpdf = new mPDF();
  $mpdf->allow_charset_conversion = true;
