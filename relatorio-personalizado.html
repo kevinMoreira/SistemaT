@@ -22,18 +22,18 @@
 
 
 		var ajax = new Ajax('POST', './php/Relatorios/relatorioPersonalizado.php', false);
-		var ajax = new Ajax('POST', 'relatorioPersonalizado.php', false);
-		var dt = 'action=gerarRelatorio';
-		dt+="&posta="+a;
-		dt+="&postb="+b;
-		alert(dt);
-//		var p+="&data2="+b;
+//		var ajax = new Ajax('POST', 'relatorioPersonalizado.php', false);
+		var p = 'action=gerarRelatorio';
+		p+='&posta='+a;
+		p+='&postb='+b;
 
-		ajax.Request(dt);
-		alert(ajax.getResponseText());
+		ajax.Request(p);
 
-		//$.pegarVal('./php/Relatorios/relatorioPersonalizado.php',{posta:a,postb:b},function(){});
-		// window.location.assign("./php/Relatorios/relatorioPersonalizado.php");
+		document.write(ajax.getResponseText());
+
+
+	//	$.pegarVal('./php/Relatorios/relatorioPersonalizado.php',{posta:a,postb:b},function(){});
+
 	}
 
 </script>
