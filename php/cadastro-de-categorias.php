@@ -20,7 +20,7 @@ if (isset($_POST['action'])) {
         case 'editarCategoria':
             editarCategoria();
             break;
-    }
+    }//
 }
 
 
