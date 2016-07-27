@@ -11,7 +11,8 @@ if(isset($_POST['nome']))
 if(isset($_POST['idCategoria']))
     $objCategoria->setIdCategoria($_POST['idCategoria']);
 
-
+if(isset($_POST['tipo']))
+    $objCategoria->setTipo($_POST['tipo']);
 
 //chamando as ações
 
@@ -33,9 +34,15 @@ if (isset($_POST['action'])){
             $objCategoriaNeg->Atualizar($objCategoria);
             break;
 
-
         case 'excluir':
             $objCategoriaNeg->Excluir($objCategoria);
+            break;
+
+
+         case 'carregarComboBoxTipo':
+            $tipo = $objCategoriaNeg->CarregarComboBoxTipo($objCategoria);
+            $json = json_encode( $tipo);
+            echo $json;
             break;
 
     }
@@ -46,31 +53,25 @@ class CategoriaNeg {
     public function Obter($pesquisa){
          $CategoriaDao = new CategoriaDao();
          return $CategoriaDao->Obter($pesquisa);
-    }
-        
+    } 
      
-     public function Salvar(Categoria $objCategoria){
+    public function Salvar(Categoria $objCategoria){
          $CategoriaDao = new CategoriaDao();
          return  $CategoriaDao->Salvar($objCategoria);
-        
-
     }
      
-     public function Excluir(Categoria $objCategoria){
-
+    public function Excluir(Categoria $objCategoria){
          $CategoriaDao = new CategoriaDao();
-       
          return $CategoriaDao->Excluir($objCategoria);
-       
     }
      
-     public function Atualizar( $objCategoria){
-
+    public function Atualizar( $objCategoria){
          $CategoriaDao = new CategoriaDao();
-
          return $CategoriaDao->Atualizar($objCategoria);
-        
     }
-    
-    
+
+    public function CarregarComboBoxTipo( $objCategoria){
+         $CategoriaDao = new CategoriaDao();
+         return $CategoriaDao->CarregarComboBoxTipo($objCategoria);
+    }
 }

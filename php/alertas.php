@@ -20,9 +20,6 @@ if (isset($_POST['action'])) {
     }
 }
 
-
-
-
 function obterVencidos(){
 
     session_start();
@@ -82,10 +79,11 @@ function obterProximosDoVencimento(){
             `loteprodutos` as lote
             inner join `loteprodutosbaixa` as lotebaixa on lotebaixa.`LoteProdutosId` = lote.`idLote`
             inner join produto as prod on prod.`idProduto` = lote.`idProduto`
-        where
-         --   lote.`validade` between now() and DATE_ADD(now(),INTERVAL 2 month)
-           
-           lote.`validade` between now() and DATE_ADD(now(),INTERVAL '".$_POST['meses']."' month)
+            inner join categoria as cat on cat.idCategoria = prod.idCategoria
+            inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
+            inner join SuperCategoria as sc on sc.idSuperCategorias = scc.superCategoriaId
+        where           
+           lote.`validade` between now() and DATE_ADD(now(),INTERVAL ifnull(prod.DataMinimaAvisoVencimento, sc.DataMinimaAvisoVencimento) day)
             and lote.status = 1
             and lotebaixa.`FlagStatus` = 1
             and prod.`status` = 1
@@ -119,28 +117,33 @@ function obterQuantidadeChegandoAoFim(){
     $conexao= AbreBancoJP();
 
     $sql="
-        select 
-            *
+        select distinct
+            a.idProduto,
+            produ.nome,
+            a.qtde
         from 
             ( 
                 SELECT 
-
-                    prod.`idProduto`,
-                    prod.nome,
+                    lote.`idProduto`,
+                    /*prod.nome,*/
                     sum(lotebaixa.`Quantidade`) as qtde
                 FROM 
                     `loteprodutos` as lote
                     inner join `loteprodutosbaixa` as lotebaixa on lotebaixa.`LoteProdutosId` = lote.`idLote`
-                    inner join produto as prod on prod.`idProduto` = lote.`idProduto`
+                    /*inner join produto as prod on prod.`idProduto` = lote.`idProduto`*/
                 where
                     lote.status = 1
                     and lotebaixa.`FlagStatus` = 1
-                    and prod.`status` = 1
+                    /*and prod.`status` = 1*/
                     and lote.`idOrganizacao` = ".$_SESSION["idOrganizacao"]."
-                    group by prod.`idProduto`
+                    group by lote.`idProduto`
             ) as a 
+            inner join produto as produ on produ.idProduto = a.idProduto
+            inner join categoria as cat on cat.idCategoria = produ.idCategoria
+            inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
+            inner join SuperCategoria as sc on sc.idSuperCategorias = scc.superCategoriaId
         where
-            a.qtde < 50";
+            a.qtde < ifnull(produ.QuantidadeMinima, sc.QuantidadeMinima)";
 
     $sql=mysql_query($sql, $conexao);
 
