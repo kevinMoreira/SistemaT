@@ -4,6 +4,7 @@ window.onload = function() {
     getDadosUsuario();
     MontaMenu();
     Desabilitar(true);
+    carregarComboBoxTipo();
 };
 
 function Editar(){
@@ -54,28 +55,20 @@ function Pesquisar(){
 
         document.getElementById('nome').value = json.nome;
         document.getElementById('codigo').value = json.idCategoria;
-
-
+        document.getElementById('tipo').value = json.tipo;
     }
 }
 
 function Excluir(){
 
     if(confirm("Deseja excluir categoria?")){
-
         var idCategoria = document.getElementById('codigo').value;
-
         var ajax = new Ajax('POST', './php/Neg/CategoriaNeg.php', false);
-
         var p='action=excluir';
         p+='&idCategoria=' + idCategoria;
-
         ajax.Request(p);
-
         alert("Excluído com sucesso!");
-
         Cancelar();
-
     }else{
         alert("Ufa... Foi por pouco!");
     }
@@ -104,6 +97,7 @@ function Novo(){
 
 function Desabilitar(valor){
     document.getElementById('nome').disabled = valor;
+    document.getElementById('tipo').disabled = valor;
 }
 
 function Cancelar(){
@@ -112,6 +106,7 @@ function Cancelar(){
 
     document.getElementById('nome').value='';
     document.getElementById('codigo').value='';
+    document.getElementById('tipo').value = 0;
 
     document.getElementById('editar').setAttribute('src', 'imagens/editar.png');
     document.getElementById('excluir').setAttribute('src', 'imagens/excluir.png');
@@ -140,22 +135,22 @@ function Cancelar(){
 }
 
 function Salvar(){
-
     var ajax = new Ajax('POST', './php/Neg/CategoriaNeg.php', false);
-
     var nome = document.getElementById('nome').value;
+    var tipo = document.getElementById('tipo').value;
 
     var p='action=salvarCategoria';
-
     p+='&nome=' + nome;
+    p+='&tipo=' + tipo;
 
+    alert(p);
     if(confirm("Deseja salvar?")){
         ajax.Request(p);
+
+        alert(ajax.getResponseText());
         Cancelar();
         alert("Gravado com sucesso!");
     }
-
-
 }
 
 function Update(){
@@ -169,10 +164,32 @@ function Update(){
 
         p+='&idCategoria=' + idCategoria;
         p+='&nome=' + nome;
+        p+='&tipo=' + tipo;
 
         ajax.Request(p);
         Cancelar();
         alert("Atualizado com sucesso!");
+    }
+}
+
+function carregarComboBoxTipo(){
+
+    var combo = document.getElementById('tipo');
+    var ajax = new Ajax('POST', './php/Neg/CategoriaNeg.php', false);
+    var p='action=carregarComboBoxTipo';
+
+    ajax.Request(p);
+
+    // alert(ajax.getResponseText());
+
+    if(ajax.getResponseText() != '0'){
+        var json = JSON.parse(ajax.getResponseText());
+        combo.options[0] = new Option ("SELECIONE", 0);
+        for (var i = 0; i < json.length; i++) {
+            combo.options[i+1] = new Option (json[i].nome, json[i].idSuperCategorias);
+        }
+    }else{
+        combo.options[0] = new Option ("SELECIONE",0);
     }
 }
 

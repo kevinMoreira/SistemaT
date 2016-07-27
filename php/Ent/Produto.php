@@ -7,7 +7,37 @@ class Produto{
     public $produtoId;
     public $categoriaId;
 
-    
+    public $tipo;
+    public $quantidadeMinima;
+    public $dataMinimaAlertaVencimento;
+   
+
+    public function getTipo(){
+        return $this->tipo;
+    }
+
+    public function setTipo($tipo){
+        $this->tipo=$tipo;
+    }
+
+    public function getQuantidadeMinima(){
+        return $this->quantidadeMinima;
+    }
+
+    public function setQuantidadeMinima($quantidadeMinima){
+        $this->quantidadeMinima=$quantidadeMinima;
+    }
+
+    public function getDataMinimaAlertaVencimento(){
+        return $this->dataMinimaAlertaVencimento;
+    }
+
+    public function setDataMinimaAlertaVencimento($dataMinimaAlertaVencimento){
+        $this->dataMinimaAlertaVencimento=$dataMinimaAlertaVencimento;
+    }
+
+
+
     public function getCategoriaoId(){
         return $this->categoriaId;
     }

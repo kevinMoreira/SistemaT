@@ -5,6 +5,7 @@ window.onload = function() {
     MontaMenu();
     Desabilitar(true);
     carregarComboBox();
+    // carregarComboBoxTipo();
 };
 
 function Editar(){
@@ -49,6 +50,11 @@ function Pesquisar(){
         document.getElementById('valorVenda').value=json.valor;
         document.getElementById('codigo').value=json.produtoId;
         document.getElementById('codigoBarras').value=json.codigoBarras;
+
+        // document.getElementById('tipo').value=json.tipo;
+        document.getElementById('quantidadeMinima').value=json.quantidadeMinima;
+        document.getElementById('dataMinimaAlertaVencimento').value=json.dataMinimaAlertaVencimento;
+
         combo.value = json.categoriaId;
         //combo.options[0] = new Option(json.categoriaId, json.categoriaId);
     }
@@ -93,12 +99,15 @@ function Novo(){
 }
 
 function Desabilitar(valor){
-
     document.getElementById('nome').disabled = valor;
     document.getElementById('valorVenda').disabled = valor;
     document.getElementById('categoria').disabled = valor;
     document.getElementById('codigo').disabled = valor;
     document.getElementById('codigoBarras').disabled = valor;
+
+    // document.getElementById('tipo').disabled = valor;
+    document.getElementById('quantidadeMinima').disabled = valor;
+    document.getElementById('dataMinimaAlertaVencimento').disabled = valor;
 }
 
 function Cancelar(){
@@ -110,6 +119,10 @@ function Cancelar(){
     document.getElementById('categoria').value='';
     document.getElementById('codigo').value='';
     document.getElementById('codigoBarras').value='';
+
+    // document.getElementById('tipo').value='';
+    document.getElementById('quantidadeMinima').value='';
+    document.getElementById('dataMinimaAlertaVencimento').value='';
 
     document.getElementById('editar').setAttribute('src', 'imagens/editar.png');
     document.getElementById('excluir').setAttribute('src', 'imagens/excluir.png');
@@ -147,6 +160,10 @@ function Salvar(){
 
     var valorVenda = document.getElementById('valorVenda').value;
     var categoriaId = document.getElementById('categoria').value;
+
+    // var tipo = document.getElementById('tipo').value;
+    var quantidadeMinima = document.getElementById('quantidadeMinima').value;
+    var dataMinimaAlertaVencimento = document.getElementById('dataMinimaAlertaVencimento').value;
     
     var p='action=salvarProduto';
 
@@ -155,6 +172,10 @@ function Salvar(){
     p+='&nome=' + nome;
     p+='&valorVenda=' + valorVenda;
     p+='&categoriaId=' + categoriaId;
+
+    // p+='&tipo=' + tipo;
+    p+='&quantidadeMinima=' + quantidadeMinima;
+    p+='&dataMinimaAlertaVencimento=' + dataMinimaAlertaVencimento;
 
     if(confirm("Deseja salvar?")){
         ajax.Request(p);
@@ -173,6 +194,11 @@ function Update(){
         var nome = document.getElementById('nome').value;
         var valorVenda = document.getElementById('valorVenda').value;
         var categoriaId = document.getElementById('categoria').value;
+
+        // var tipo = document.getElementById('tipo').value;
+        var quantidadeMinima = document.getElementById('quantidadeMinima').value;
+        var dataMinimaAlertaVencimento = document.getElementById('dataMinimaAlertaVencimento').value;
+
         var p='action=editarProduto'; 
 
         p+='&produtoId=' + produtoId;
@@ -180,6 +206,10 @@ function Update(){
         p+='&nome=' + nome;
         p+='&valorVenda=' + valorVenda;
         p+='&categoriaId=' + categoriaId;
+
+        // p+='&tipo=' + tipo;
+        p+='&quantidadeMinima=' + quantidadeMinima;
+        p+='&dataMinimaAlertaVencimento=' + dataMinimaAlertaVencimento;
 
         ajax.Request(p);
         Cancelar();
@@ -195,6 +225,8 @@ function carregarComboBox(){
 
     ajax.Request(p);
 
+    // alert(ajax.getResponseText());
+
     if(ajax.getResponseText() != '0'){
         var json = JSON.parse(ajax.getResponseText());
         combo.options[0] = new Option ("SELECIONE");
@@ -205,4 +237,23 @@ function carregarComboBox(){
         combo.options[0] = new Option ("CADASTRE UMA CATEGORIA");
     }
 }
+
+// function carregarComboBoxTipo(){
+
+//     var combo = document.getElementById('tipo');
+//     var ajax = new Ajax('POST', './php/Neg/ProdutoNeg.php', false);
+//     var p='action=carregarComboBoxTipo';
+
+//     ajax.Request(p);
+
+//     if(ajax.getResponseText() != '0'){
+//         var json = JSON.parse(ajax.getResponseText());
+//         combo.options[0] = new Option ("SELECIONE");
+//         for (var i = 0; i < json.length; i++) {
+//             combo.options[i+1] = new Option (json[i].nome, json[i].idSuperCategorias);
+//         }
+//     }else{
+//         combo.options[0] = new Option ("SELECIONE");
+//     }
+// }
 

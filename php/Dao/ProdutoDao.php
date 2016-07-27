@@ -11,10 +11,6 @@ require_once('../Ent/Produto.php');
 
 class ProdutoDao{
 
-	
-	
-	
-
 	public function Obter($pesq)
 	{
 		session_start();
@@ -28,9 +24,13 @@ class ProdutoDao{
 				`produto`.`nome`,
 				`produto`.`valorVenda`,
 				`produto`.`status`,
-				`produto`.`CodigoDeBarras`
+				`produto`.`CodigoDeBarras`,
+				sc.idSuperCategorias as tipo
 			FROM 
-				`estoque`.`produto`
+				`produto` as produto
+				inner join categoria as cat on cat.idCategoria =produto.idCategoria
+				inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
+				inner join SuperCategorias as sc on sc.idSuperCategorias = scc.superCategoriaId
 			WHERE 
 				status=1
 			and 
@@ -39,7 +39,7 @@ class ProdutoDao{
 				idProduto = '".$pesq."'
 			AND
 				idOrganizacao = $_SESSION[idOrganizacao]";
-//		print"<script>alert('$_SESSION[idOrganizacao]')</script>";
+
 		$sql=mysql_query($sql, $conexao);
 
 		if(mysql_num_rows($sql) <= 0){
@@ -48,13 +48,13 @@ class ProdutoDao{
 		}
 
 		while($row=mysql_fetch_row($sql)){
-
 			$objProduto->setProdutoId($row[0]);
 			$objProduto->setCategoriaId($row[1]);
 			$objProduto->setNome($row[2]);
 			$objProduto->setValor($row[3]);
 			$objProduto->setStatus($row[4]);
 			$objProduto->setCodigoBarras($row[5]);
+			$objProduto->setTipo($row[6]);
 		}
 		mysql_close($conexao);
 		return $objProduto;
@@ -68,7 +68,7 @@ class ProdutoDao{
 		$conexao=AbreBancoJP();
 
 		$sql="
-        INSERT INTO `estoque`.`produto`
+        INSERT INTO  `produto`
 		(
 			`idOrganizacao`,
 			`idCategoria`,
@@ -76,6 +76,10 @@ class ProdutoDao{
 			`valorVenda`,
 			`status`,
 			`CadastroDataHora`,
+
+			`quantidadeMinima`,
+			`dataMinimaAlertaVencimento`,
+
 			`CodigoDeBarras`
 		)
 		VALUES
@@ -87,6 +91,10 @@ class ProdutoDao{
 			".$produto->getValor().",
 			1,
 			current_timestamp(),
+
+			".$produto->getQuantidadeMinima().",
+			".$produto->getDataMinimaAlertaVencimento().",
+
 			'".$produto->getCodigoBarras()."'
 		);
 ";
@@ -104,7 +112,7 @@ class ProdutoDao{
 	{
 		session_start();
 		$conexao=AbreBancoJP();
-//		print "<script> alert($_SESSION[idOrganizacao]); </script>";
+
 		$sql="
 		UPDATE 
 			`produto`
@@ -113,11 +121,19 @@ class ProdutoDao{
 			`nome` = '".$produto->getNome()."',
 			`valorVenda` = ".$produto->getValor().",
 			`AtualizacaoDataHora` = current_timestamp(),
-			`CodigoDeBarras` ='".$produto->getCodigoBarras()."'
-		WHERE 
-			`idProduto` = ".$produto->getProdutoId().";";
-//		-- and
-//			-- `idOrganizacao` = $_SESSION[idOrganizacao]";
+			`CodigoDeBarras` ='".$produto->getCodigoBarras()."' 
+		";
+
+		if($produto->getQuantidadeMinima() != null)
+			$sql .=" ,`quantidadeMinima` =".$produto->getQuantidadeMinima();
+
+		if($produto->getDataMinimaAlertaVencimento() != null)
+			$sql .=" ,`dataMinimaAlertaVencimento` =".$produto->getDataMinimaAlertaVencimento();
+
+		$sql .="
+		 WHERE 
+			`idProduto` = ".$produto->getProdutoId()."
+		 	and `idOrganizacao` = $_SESSION[idOrganizacao]";
 
 		mysql_query($sql, $conexao);
 		$retorno = "1";
@@ -130,27 +146,15 @@ class ProdutoDao{
 		session_start();
 		$conexao=AbreBancoJP();
 
-//		$sql="
-//		UPDATE
-//			`produto`
-//		SET
-//			`status` = 0,
-//			`AtualizacaoDataHora` = current_timestamp()
-//		WHERE
-//			-- `idProduto` = ".$produto->getProdutoId()."
-//			`nome` = '".$produto->getNome()."'
-//
-//			;";
-//			and
-//			`idOrganizacao` = $_SESSION[idOrganizacao]";
-
-		$sql="UPDATE 
-			`produto`
-		SET
-			`status` = 0,
-			`AtualizacaoDataHora` = current_timestamp()
-		WHERE 
-			`idProduto` = ".$produto->getProdutoId().";";
+		$sql="
+			UPDATE 
+				`produto`
+			SET
+				`status` = 0,
+				`AtualizacaoDataHora` = current_timestamp()
+			WHERE 
+				`idProduto` = ".$produto->getProdutoId()."
+				and `idOrganizacao` = $_SESSION[idOrganizacao];";
 
 		mysql_query($sql, $conexao);
 		$retorno = "1";
@@ -184,6 +188,37 @@ class ProdutoDao{
 			$json[] = array(
 				'id_categoria' => $row[0],
 				'nome_categoria'=>$row[1]
+			);
+		}
+		mysql_close($conexao);
+		return $json;
+	}
+
+
+	public function CarregarComboBoxTipo(){
+		session_start();
+		$conexao= AbreBancoJP();
+
+		$sql="
+			SELECT 
+				idSuperCategorias,
+				nome
+			FROM 
+				SuperCategorias
+			ORDER BY 
+				nome asc";
+
+		$sql=mysql_query($sql, $conexao);
+
+		if(mysql_num_rows($sql) <= 0){
+			mysql_close($conexao);
+			return 0;
+		}
+
+		while($row=mysql_fetch_row($sql)){
+			$json[] = array(
+				'idSuperCategorias' => $row[0],
+				'nome'=>$row[1]
 			);
 		}
 		mysql_close($conexao);

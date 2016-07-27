@@ -3,7 +3,7 @@ class Categoria{
 	public $idCategoria;
     public $nome;
     public $status;
-    
+    public $tipo;
 
         function getNome() {
             return $this->nome;
@@ -20,6 +20,14 @@ class Categoria{
         function setIdCategoria($idCategoria){
             $this->idCategoria = $idCategoria;
 
+        }
+
+        public function getTipo(){
+            return $this->tipo;
+        }
+
+        public function setTipo($tipo){
+            $this->tipo=$tipo;
         }
 
         /**

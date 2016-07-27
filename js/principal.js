@@ -1,5 +1,4 @@
 window.onload = function() {
-
     VerificaSessao();
     MontaMenu();
     getDadosUsuario();
@@ -91,12 +90,8 @@ function verificarVencido(){
 
 function verificarProxVencimento(){
 
-   var vencimento = prompt("Digite quantos meses");
     var ajax = new Ajax('POST', 'php/alertas.php', false);
-
     var p = 'action=obterProximosDoVencimento';
-    //p+='&nome=' + nome;
-    p+='&meses='+vencimento;
     ajax.Request(p);
 
      if(ajax.getResponseText() == '0')
