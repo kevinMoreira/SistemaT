@@ -26,13 +26,13 @@ class CategoriaDAO {
 						nomeCategoria,
 						idSuperCategorias
 				FROM 
-					categoria as a 
-					inner join SuperCategoriasCategorias as b on b.categoriaId = a.idCategoria
+					categoria as c 
+					inner join SuperCategoriasCategorias as b on b.categoriaId = c.idCategoria
 					inner join SuperCategorias as a on a.idSuperCategorias = b.SuperCategoriaId
 				WHERE
-				    (nomeCategoria LIKE CONCAT('%', '$pesq' '%') OR '$pesq'  IS NULL)
+				    ((nomeCategoria LIKE CONCAT('%', '$pesq' '%') OR '$pesq'  IS NULL)
 				    or 
-				     idCategoria ='$pesq'
+				     idCategoria ='$pesq')
 				 AND 
 					status=1
 				AND
@@ -62,7 +62,7 @@ class CategoriaDAO {
 		$conexao=AbreBancoJP();
 
 		$sql = "call USP_MANTER_CATEGORIAS(
-					'".$categoria->getNome().",
+					'".$categoria->getNome()."',
 					".$_SESSION["idOrganizacao"].",
 					null,
 					null,
@@ -120,32 +120,37 @@ class CategoriaDAO {
 	}
 
 
+
+
+
 	//Atualiza categoria na base
 	public function Atualizar(Categoria $categorias)
 	{
 		session_start();
 		$conexao=AbreBancoJP();
 
-		$sql="
-		        UPDATE
+		$sql=" UPDATE
 		        	SuperCategoriasCategorias
 		        SET
-		        	SuperCategoriaId = ".$categoria->getTipo()."
+		        	SuperCategoriaId = ".$categorias->getTipo()."
 		        WHERE
-		        	`idCategoria` = ".$categorias->getIdCategoria() .";
+		        	`Categoriaid` = ".$categorias->getIdCategoria() ;
+		mysql_query($sql, $conexao);
 
-				UPDATE 
+		$sql2="UPDATE
 					`categoria`
 				SET
 					`nomeCategoria` = '".$categorias->getNome()."',
 					`status` = 1,
 					`AtualizacaoDataHora` = current_timestamp()
 				WHERE 
-					`idCategoria` = ".$categorias->getIdCategoria() ."
+				  `idCategoria` = ".$categorias->getIdCategoria() ."
+				
+				
 				AND
 					`idOrganizacao`=". $_SESSION['idOrganizacao'].";";
 
-		mysql_query($sql, $conexao);
+		mysql_query($sql2, $conexao);
 
 
 		$retorno = "1";

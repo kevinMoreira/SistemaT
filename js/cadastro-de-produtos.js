@@ -37,8 +37,11 @@ function Pesquisar(){
         p+='&pesq=' + pesq;
 
         ajax.Request(p);
-
+        alert(p);
+        alert(ajax.getResponseText());
         if(ajax.getResponseText()==0){
+
+
             alert("Inexistente!");
             return;
         }
@@ -68,8 +71,9 @@ function Excluir(){
 
         var p='action=excluir';
         p+='&produtoId=' + produtoId;
-
+        alert(p);
         ajax.Request(p);
+        alert(ajax.getResponseText());
         alert("Excluído com sucesso!");
         Cancelar();
     }else{
@@ -176,9 +180,11 @@ function Salvar(){
     // p+='&tipo=' + tipo;
     p+='&quantidadeMinima=' + quantidadeMinima;
     p+='&dataMinimaAlertaVencimento=' + dataMinimaAlertaVencimento;
-
+  alert(p);
     if(confirm("Deseja salvar?")){
+
         ajax.Request(p);
+        alert(ajax.getResponseText());
         Cancelar();
         alert("Gravado com sucesso!");
     }
@@ -222,10 +228,10 @@ function carregarComboBox(){
     var combo = document.getElementById('categoria');
     var ajax = new Ajax('POST', './php/Neg/ProdutoNeg.php', false);
     var p='action=carregarComboBox';
-
+    alert(p);
     ajax.Request(p);
 
-    // alert(ajax.getResponseText());
+
 
     if(ajax.getResponseText() != '0'){
         var json = JSON.parse(ajax.getResponseText());

@@ -25,20 +25,23 @@ class ProdutoDao{
 				`produto`.`valorVenda`,
 				`produto`.`status`,
 				`produto`.`CodigoDeBarras`,
-				sc.idSuperCategorias as tipo
+                sc.idSuperCategorias as tipo,
+                `produto`.`QuantidadeMinima`,
+				`produto`.`DataMinimaAvisoVencimento`		
+				
 			FROM 
 				`produto` as produto
 				inner join categoria as cat on cat.idCategoria =produto.idCategoria
 				inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
 				inner join SuperCategorias as sc on sc.idSuperCategorias = scc.superCategoriaId
 			WHERE 
-				status=1
+				`produto`.status=1
 			and 
-				nome = '".$pesq."'
+				(`produto`.nome = '".$pesq."'
 			OR 
-				idProduto = '".$pesq."'
+				`produto`.idProduto = '".$pesq."')
 			AND
-				idOrganizacao = $_SESSION[idOrganizacao]";
+				`produto`.idOrganizacao = $_SESSION[idOrganizacao]";
 
 		$sql=mysql_query($sql, $conexao);
 
@@ -55,6 +58,9 @@ class ProdutoDao{
 			$objProduto->setStatus($row[4]);
 			$objProduto->setCodigoBarras($row[5]);
 			$objProduto->setTipo($row[6]);
+			$objProduto->setQuantidadeMinima($row[7]);
+			$objProduto->setDataMinimaAlertaVencimento($row[8]);
+
 		}
 		mysql_close($conexao);
 		return $objProduto;
@@ -78,20 +84,19 @@ class ProdutoDao{
 			`CadastroDataHora`,
 
 			`quantidadeMinima`,
-			`dataMinimaAlertaVencimento`,
+			`DataMinimaAvisoVencimento`,
 
 			`CodigoDeBarras`
 		)
 		VALUES
 		(
-			-- ".$_SESSION[idOrganizacao].",
+		 
 			$_SESSION[idOrganizacao],
 			  ".$produto->getCategoriaoId().",
 			'".$produto->getNome()."',
 			".$produto->getValor().",
 			1,
 			current_timestamp(),
-
 			".$produto->getQuantidadeMinima().",
 			".$produto->getDataMinimaAlertaVencimento().",
 
@@ -121,7 +126,9 @@ class ProdutoDao{
 			`nome` = '".$produto->getNome()."',
 			`valorVenda` = ".$produto->getValor().",
 			`AtualizacaoDataHora` = current_timestamp(),
-			`CodigoDeBarras` ='".$produto->getCodigoBarras()."' 
+			`CodigoDeBarras` ='".$produto->getCodigoBarras()."', 
+			`quantidadeMinima` ='".$produto->getQuantidadeMinima()."',
+			`DataMinimaAvisoVencimento`='".$produto->setDataMinimaAlertaVencimento()."'
 		";
 
 		if($produto->getQuantidadeMinima() != null)
@@ -142,7 +149,7 @@ class ProdutoDao{
 	}
 
 
-	public  function  Excluir( Produto $produto){
+	public  function  Excluir(Produto $produto){
 		session_start();
 		$conexao=AbreBancoJP();
 
@@ -153,8 +160,8 @@ class ProdutoDao{
 				`status` = 0,
 				`AtualizacaoDataHora` = current_timestamp()
 			WHERE 
-				`idProduto` = ".$produto->getProdutoId()."
-				and `idOrganizacao` = $_SESSION[idOrganizacao];";
+				`idProduto` = 33
+				and `idOrganizacao` = ".$_SESSION['idOrganizacao'];
 
 		mysql_query($sql, $conexao);
 		$retorno = "1";
