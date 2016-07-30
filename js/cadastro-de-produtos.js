@@ -73,8 +73,9 @@ function Excluir(){
         p+='&produtoId=' + produtoId;
         alert(p);
         ajax.Request(p);
-        alert(ajax.getResponseText());
+
         alert("Excluído com sucesso!");
+        alert(ajax.getResponseText());
         Cancelar();
     }else{
         alert("Ufa... Foi por pouco!");
@@ -216,8 +217,9 @@ function Update(){
         // p+='&tipo=' + tipo;
         p+='&quantidadeMinima=' + quantidadeMinima;
         p+='&dataMinimaAlertaVencimento=' + dataMinimaAlertaVencimento;
-
+        alert(p);
         ajax.Request(p);
+        alert(ajax.getResponseText());
         Cancelar();
         alert("Atualizado com sucesso!");
     }

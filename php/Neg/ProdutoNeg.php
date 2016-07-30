@@ -52,8 +52,8 @@ if (isset($_POST['action'])) {
             echo $teste;
             break;
 
-        case 'excluirProduto':
-            $objProdutoNeg->Excluir($objProdutoEnt);
+        case 'excluir':
+            $objProdutoNeg->Excluir($_POST['produtoId']);
             break;
 
         case 'editarProduto':
@@ -103,9 +103,9 @@ class ProdutoNeg {
         return $produtoDao->Atualizar($objProduto);
     }
 
-    public function Excluir(Produto $objProduto){
+    public function Excluir($id){
         $produtoDao = new ProdutoDao();
-        return $produtoDao->Excluir($objProduto);
+        return $produtoDao->Exclir($id);
     }
     
     

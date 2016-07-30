@@ -41,7 +41,7 @@ class ProdutoDao{
 			OR 
 				`produto`.idProduto = '".$pesq."')
 			AND
-				`produto`.idOrganizacao = $_SESSION[idOrganizacao]";
+				`produto`.idOrganizacao = ".$_SESSION['idOrganizacao'];
 
 		$sql=mysql_query($sql, $conexao);
 
@@ -117,7 +117,6 @@ class ProdutoDao{
 	{
 		session_start();
 		$conexao=AbreBancoJP();
-
 		$sql="
 		UPDATE 
 			`produto`
@@ -127,21 +126,20 @@ class ProdutoDao{
 			`valorVenda` = ".$produto->getValor().",
 			`AtualizacaoDataHora` = current_timestamp(),
 			`CodigoDeBarras` ='".$produto->getCodigoBarras()."', 
-			`quantidadeMinima` ='".$produto->getQuantidadeMinima()."',
-			`DataMinimaAvisoVencimento`='".$produto->setDataMinimaAlertaVencimento()."'
-		";
-
-		if($produto->getQuantidadeMinima() != null)
-			$sql .=" ,`quantidadeMinima` =".$produto->getQuantidadeMinima();
-
-		if($produto->getDataMinimaAlertaVencimento() != null)
-			$sql .=" ,`dataMinimaAlertaVencimento` =".$produto->getDataMinimaAlertaVencimento();
-
-		$sql .="
-		 WHERE 
+			`quantidadeMinima` =".$produto->getQuantidadeMinima().",
+			`DataMinimaAvisoVencimento`=".$produto->getDataMinimaAlertaVencimento()."
+					 WHERE 
 			`idProduto` = ".$produto->getProdutoId()."
-		 	and `idOrganizacao` = $_SESSION[idOrganizacao]";
+	 	and `idOrganizacao` = ".$_SESSION['idOrganizacao'];
 
+//		if($produto->getQuantidadeMinima() != null)
+//			$sql .=" ,`quantidadeMinima` =".$produto->getQuantidadeMinima();
+//		if($produto->getDataMinimaAlertaVencimento() != null)
+//			$sql .=" ,`dataMinimaAlertaVencimento` =".$produto->getDataMinimaAlertaVencimento();
+//		$sql .="
+//		 WHERE
+//			`idProduto` = ".$produto->getProdutoId()."
+//		 	and `idOrganizacao` = $_SESSION[idOrganizacao]";
 		mysql_query($sql, $conexao);
 		$retorno = "1";
 		mysql_close($conexao);
@@ -149,26 +147,7 @@ class ProdutoDao{
 	}
 
 
-	public  function  Excluir(Produto $produto){
-		session_start();
-		$conexao=AbreBancoJP();
 
-		$sql="
-			UPDATE 
-				`produto`
-			SET
-				`status` = 0,
-				`AtualizacaoDataHora` = current_timestamp()
-			WHERE 
-				`idProduto` = 33
-				and `idOrganizacao` = ".$_SESSION['idOrganizacao'];
-
-		mysql_query($sql, $conexao);
-		$retorno = "1";
-		mysql_close($conexao);
-
-		return $retorno;
-	}
 
 	public function CarregarComboBox(){
 		session_start();
@@ -230,5 +209,25 @@ class ProdutoDao{
 		}
 		mysql_close($conexao);
 		return $json;
+	}
+
+
+
+	public function Exclir($id)
+	{
+		session_start();
+		$conexao=AbreBancoJP();
+		$sql="
+			UPDATE
+				`produto`
+			SET
+				`status` = 0,
+				`AtualizacaoDataHora` = current_timestamp()
+			WHERE
+				`idProduto` = ".$id;
+		mysql_query($sql, $conexao);
+		$retorno = "1";
+		mysql_close($conexao);
+		return $retorno;
 	}
 }
