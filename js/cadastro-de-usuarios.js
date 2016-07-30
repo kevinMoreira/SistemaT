@@ -44,7 +44,7 @@ function MudaStatus() {
 
 function Menu() {
 
-   var ajax = new Ajax('POST', 'php/cadastro-de-usuarios.php', false);
+    var ajax = new Ajax('POST', 'php/cadastro-de-usuarios.php', false);
     // var ajax = new Ajax('POST', 'php/Neg/UsuarioNeg.php', false);
     var p = 'action=menu';
 
@@ -55,7 +55,7 @@ function Menu() {
     var json2;
 
     var menu = document.getElementById('permissoes');//seleciona div
-
+    alert(menu);
     for (var i = 0; i < json.length; i++) {
 
         var checkbox = DOM.newElement('input', json[i].id_menu);
@@ -126,8 +126,8 @@ function Pesquisar() {
     var pesq;
     if (pesq = prompt("Buscar usuário pelo nome, telefone ou cpf.")) {
 
-        // var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
-        var ajax = new Ajax('POST', './php/cadastro-de-usuarios.php', false);
+        var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
+        // var ajax = new Ajax('POST', './php/cadastro-de-usuarios.php', false);
         var p = 'action=pesquisarUsuario';
         p += '&pesq=' + pesq;
 
@@ -137,44 +137,44 @@ function Pesquisar() {
             alert("Inexistente!");
             return;
         }
-
+        alert(ajax.getResponseText());
         var json = JSON.parse(ajax.getResponseText());
         var combo = document.getElementById('departamento');
 
-        document.getElementById('nome').value = json[0].nome;
+        document.getElementById('nome').value = json.nome;
 
-        document.getElementById('cpf').value = json[0].cpf;
-        document.getElementById('data_nascimento').value = json[0].data_nascimento;
-        document.getElementById('telefone').value = json[0].telefone;
-        document.getElementById('celular').value = json[0].celular;
-        document.getElementById('email').value = json[0].email;
-        document.getElementById('cep').value = json[0].cep;
-        document.getElementById('endereco').value = json[0].endereco;
-        document.getElementById('numero').value = json[0].numero;
-        document.getElementById('complemento').value = json[0].complemento;
-        document.getElementById('bairro').value = json[0].bairro;
-        document.getElementById('cidade').value = json[0].cidade;
-        document.getElementById('uf').value = json[0].uf;
-        document.getElementById('login').value = json[0].login;
-        document.getElementById('senha').value = json[0].senha;
-        document.getElementById('status').value = json[0].status;
-        document.getElementById('codigo').value = json[0].id_usuario;
-         document.getElementById('departamento').value = json[0].departamento;
-        combo.options[0] = new Option(json[0].nomeDepartamento, json[0].idDepartamento);
-        combo.options[0] = new Option(json.nomeDepartamento, json[0].idDepartamento);
+        document.getElementById('cpf').value = json.cpf;
+        document.getElementById('data_nascimento').value = json.dataNasc;
+        document.getElementById('telefone').value = json.telefone;
+        document.getElementById('celular').value = json.celular;
+        document.getElementById('email').value = json.email;
+        document.getElementById('cep').value = json.cep;
+        document.getElementById('endereco').value = json.endereco;
+        document.getElementById('numero').value = json.numero;
+        document.getElementById('complemento').value = json.complemento;
+        document.getElementById('bairro').value = json.bairo;
+        document.getElementById('cidade').value = json.cidade;
+        document.getElementById('uf').value = json.uf;
+        document.getElementById('login').value = json.login;
+        document.getElementById('senha').value = json.senha;
+        document.getElementById('status').value = json.status;
+        document.getElementById('codigo').value = json.idUsuario;
+        document.getElementById('departamento').value = json.departamento;
+        combo.options[0] = new Option(json.nomeDepartamento, json.idDepartamento);
+        combo.options[0] = new Option(json.nomeDepartamento, json.idDepartamento);
 
         var q = 'action=pesquisarMenuUsuario';
-        q += '&id_usuario=' + json.id_usuario;
+        q += '&id_usuario=' + json.idUsuario;
 
         var r = 'action=pesquisarSubMenuUsuario';
-        r += '&id_usuario=' + json.id_usuario;
-
+        r += '&id_usuario=' + json.idUsuario;
+        alert(r);
         ajax.Request(q);
 
         json = JSON.parse(ajax.getResponseText());
-
+        // alert(ajax.getResponseText());
         document.getElementById('permissoes').setAttribute('style', 'display:block');
-
+        alert(r);
         var chk = document.getElementsByName('item');
         var x='action=menu';
         ajax.Request(x);
@@ -196,11 +196,13 @@ function Pesquisar() {
         ajax.Request(r);
 
         json = JSON.parse(ajax.getResponseText());
-
+        alert(json);
         var chk2 = document.getElementsByName('sub_item');
-
+        alert("Valor json"+json[0]);
         for (var i = 0; i < json.length; i++) {
             for (var j = 0; j < chk2.length; j++) {
+              //  alert(json[j].id_submenu);
+                //   alert(json.id_submenu + "==" + chk2[j].id);
                 if (json[i].id_submenu == chk2[j].id)
                     chk2[j].checked = true;
             }
@@ -327,7 +329,7 @@ function Cancelar() {
 
 function Salvar() {
 
-    //var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
+    // var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
     var ajax = new Ajax('POST', './php/cadastro-de-usuarios.php', false);
     var nome = document.getElementById('nome').value;
     var departamento = document.getElementById('departamento').value;
@@ -351,28 +353,28 @@ function Salvar() {
 
     var menu = '';
     var subMenu = '';
-    
+
     for (var i = 0; i < chk.length; i++) {
-    
+
         if (chk[i].checked == true) {
-    
+
             if (menu == '')
                 menu = chk[i].id + ",";
             else
                 menu += chk[i].id + ",";
         }
     }
-    
+
     for (var i = 0; i < chk2.length; i++) {
-    
+
         if (chk2[i].checked == true) {
-    
+
             if (subMenu == '')
                 subMenu = chk2[i].id + ",";
             else
                 subMenu += chk2[i].id + ",";
         }
-    
+
     }
 
 
@@ -403,6 +405,7 @@ function Salvar() {
     if (confirm("Deseja salvar?")) {
         ajax.Request(p);
         ajax.Request(q);
+        alert(ajax.getResponseText());
         Cancelar();
         alert("Gravado com sucesso!");
     }
@@ -412,8 +415,8 @@ function Update() {
 
     if (confirm("Deseja atualizar?")) {
 
-        //var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
-        var ajax = new Ajax('POST', './php/cadastro-de-usuarios.php', false);
+        var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
+        // var ajax = new Ajax('POST', './php/cadastro-de-usuarios.php', false);
         var nome = document.getElementById('nome').value;
         var cpf = document.getElementById('cpf').value;
         var data_nascimento = document.getElementById('data_nascimento').value;
@@ -428,7 +431,7 @@ function Update() {
         var cidade = document.getElementById('cidade').value;
         var uf = document.getElementById('uf').value;
         var login = document.getElementById('login').value;
-         var senha = document.getElementById('senha').value;
+        var senha = document.getElementById('senha').value;
         var status = document.getElementById('status').value;
         var id_usuario = document.getElementById('codigo').value;
         var departamento = document.getElementById('departamento').value;
@@ -483,13 +486,15 @@ function Update() {
         p += '&id_usuario=' + id_usuario;
         p += '&idDepartamento=' + departamento;
 
-         q += '&menu=' + menu;//Envia vetor com as opções de permissão do usuário
-         q += '&subMenu=' + subMenu;//Envia vetor com as opções de permissão do usuário
-         q += '&id_usuario=' + id_usuario;
+        q += '&menu=' + menu;//Envia vetor com as opções de permissão do usuário
+        q += '&subMenu=' + subMenu;//Envia vetor com as opções de permissão do usuário
+        q += '&id_usuario=' + id_usuario;
         ajax.Request(p);
+        alert(p);
         ajax.Request(q);
+        alert(q);
         Cancelar();
-
+        alert(ajax.getResponseText());
         window.location = 'cadastro-de-usuarios.html';
 
         alert("Atualizado com sucesso!");

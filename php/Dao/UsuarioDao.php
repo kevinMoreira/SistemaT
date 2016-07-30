@@ -20,7 +20,7 @@ class UsuarioDao
     public function Obter($pesq)
     {
 
-        session_start();
+
         $conexao = AbreBancoJP();
 
 
@@ -33,7 +33,7 @@ class UsuarioDao
             ,	idDepartamento
 			,	nome
 			,	bairro
-			,	uf
+			
     		,	cpf
 			,	data_nascimento
 			,	telefone
@@ -66,7 +66,7 @@ class UsuarioDao
 		AND 
 			status=1
 		AND
-			u.idOrganizacao = $_SESSION[idOrganizacao]";
+			idOrganizacao = $_SESSION[idOrganizacao]";
 
         $sql = mysql_query($sql, $conexao);
 
@@ -84,7 +84,7 @@ class UsuarioDao
             $objUsuarioEnt->setIdDepartamento($row['idDepartamento']);
             $objUsuarioEnt->setNome($row['nome']);
             $objUsuarioEnt->setCpf($row['cpf']);
-           $objUsuarioEnt->setDataNasc($row['data_nascimento']);
+            $objUsuarioEnt->setDataNasc($row['data_nascimento']);
             $objUsuarioEnt->setTelefone($row['telefone']);
             $objUsuarioEnt->setCelular($row['celular']);
             $objUsuarioEnt->setEmail($row['email']);
@@ -98,7 +98,7 @@ class UsuarioDao
 
             $objUsuarioEnt->setEndereco($row['endereco']);
             $objUsuarioEnt->setCidade($row['cidade']);
-            $objUsuarioEnt->setUf($row['uf']);
+            $objUsuarioEnt->setUf($row['estado']);
             $objUsuarioEnt->setDepartamento($row['idDepartamento']);
 
         }
@@ -145,7 +145,7 @@ class UsuarioDao
     {
         session_start();
         $conexao=AbreBancoJP();
-       // echo "<script>alert($_SESSION[idOrganizacao]);</script>";
+        // echo "<script>alert($_SESSION[idOrganizacao]);</script>";
         $sql="INSERT INTO `usuarios`
 		(
 	
@@ -211,22 +211,22 @@ class UsuarioDao
     }
 
     public function Atualizar($nome,
-          $cpf,
-          $data_nascimento,
-          $telefone,
-          $celular,
-          $email,
-          $cep,
-          $endereco,
-          $numero,
-          $complemento,
-          $bairro,
-          $cidade,
-          $uf,
-          $login,
-          $senha,
-          $status
-          )
+                              $cpf,
+                              $data_nascimento,
+                              $telefone,
+                              $celular,
+                              $email,
+                              $cep,
+                              $endereco,
+                              $numero,
+                              $complemento,
+                              $bairro,
+                              $cidade,
+                              $uf,
+                              $login,
+                              $senha,
+                              $status
+    )
     {
         session_start();
         $conexao = AbreBancoJP();
@@ -255,7 +255,7 @@ class UsuarioDao
             `estado` = '".$uf."'
 		
 		WHERE
-			`login` = ".$login."
+			`login` = '".$login."'
 		AND
 			`idOrganizacao`= ".$_SESSION['idOrganizacao'];
 
@@ -352,24 +352,24 @@ class UsuarioDao
 //
 //    }
 
-//    function subMenu(){
-//        $conexao = AbreBancoJP();
-//
-//        $query = "SELECT s.nome, s.idSubmenu FROM sub_menu s where s.idMenu=" . $_POST['id_menu'];
-//
-//        $query = mysql_query($query, $conexao);
-//
-//        while($row=mysql_fetch_row($query)){
-//
-//            $json[] = array(
-//                'id_submenu' => $row['1'],
-//                'nome_submenu' => $row['0'],
-//                //'id_menu' => $_POST['id_menu']//teste
-//            );
-//        }
-//        echo json_encode($json);
-//        mysql_close($conexao);
-//    }
+    function subMenu($idMenu){
+        $conexao = AbreBancoJP();
+
+        $query = "SELECT s.nome, s.idSubmenu FROM sub_menu s where s.idMenu=" . $idMenu;
+
+        $query = mysql_query($query, $conexao);
+
+        while($row=mysql_fetch_row($query)){
+
+            $json[] = array(
+                'id_submenu' => $row['1'],
+                'nome_submenu' => $row['0'],
+                //'id_menu' => $_POST['id_menu']//teste
+            );
+        }
+        echo json_encode($json);
+        mysql_close($conexao);
+    }
 
 
 //    public function Excluir($id)
@@ -400,7 +400,6 @@ class UsuarioDao
 
     function salvarMenu($idOrg, $menu, $submenu){
 
-
         $conexao = AbreBancoJP();
 
         $sql="SELECT idUsuario FROM usuarios where status=1 and idOrganizacao=". $idOrg ." ORDER BY idUsuario DESC LIMIT 1";
@@ -420,7 +419,7 @@ class UsuarioDao
 
         for($i=0; $i < sizeof($submenu); $i++){
 
-            $sql="insert into controle_submenu values ('',$lastIdUsr[0],$submenu[$i], $_SESSION[idOrganizacao])";
+            $sql="insert into controle_submenu values ('',$lastIdUsr[0],$submenu[$i], $idOrg)";
             mysql_query($sql,$conexao);
 
         }
@@ -430,123 +429,128 @@ class UsuarioDao
         mysql_close($conexao);
     }
 
-//    function pesquisarUsuario(){
-//
-//        session_start();
-//        $conexao= AbreBancoJP();
-//
-//        $sql="SELECT
-//    u.idUsuario,
-//    u.idOrganizacao,
-//    u.idDepartamento,
-//     u.nome,
-//     u.cpf,
-//     u.data_nascimento,
-//    u.telefone,
-//    u.celular,
-//    u.cep,
-//     u.endereco,
-//     u.numero,
-//     u.complemento,
-//     u.bairro,
-//     u.cidade,
-//      u.estado,
-//       u.email,
-//        u.login,
-//        u.senha,
-//        u.permissao,
-//         u.status,
-//          u.idDepartamento,
-//          d.nome
-//    from usuarios u,
-//    departamento d
-//    INNER JOIN departamento d on d.idDepartamento = u.idDepartamento
-//    where (u.nome='$_POST[pesq]'
-//      OR u.telefone='$_POST[pesq]'
-//      OR u.cpf='$_POST[pesq]')
-//    and u.status=1 and u.idOrganizacao=". $_SESSION['idOrganizacao'] ."
-//    and d.status=1 and d.idOrganizacao=" .$_SESSION['idOrganizacao'];
-//
-//        $sql=mysql_query($sql, $conexao);
-//
-//        if(mysql_num_rows($sql) <= 0){
-//            echo '0';
-//            mysql_close($conexao);
-//            return;
-//        }
-//
-//        while($row=mysql_fetch_row($sql)){
-//
-//            $json[]= array(
-//                'id_usuario' => $row['0'],
-//                'nome' => $row['3'],
-//                'cpf' => $row['4'],
-//                'data_nascimento' => $row['5'],
-//                'telefone' => $row['6'],
-//                'celular' => $row['7'],
-//                'cep' => $row['8'],
-//                'endereco' => $row['9'],
-//                'numero' => $row['10'],
-//                'complemento' => $row['11'],
-//                'bairro' => $row['12'],
-//                'cidade' => $row['13'],
-//                'uf' => $row['14'],
-//                'email' => $row['15'],
-//                'login' => $row['16'],
-//                'senha' => $row['17'],
-//                'permissao' => $row['18'],
-//                'status' => $row['19'],
-//                'idDepartamento' => $row['20'],
-//                'nomeDepartamento' => $row['21']
-//            );
-//        }
-//
-//        echo json_encode($json);
-//        mysql_close($conexao);
-//    }
+    function pesquisarUsuario($pesquisa, $idOrg){
 
-//    function pesquisarMenuUsuario(){
-//
-//        $conexao= AbreBancoJP();
-//
-//        $sql="SELECT cm.idMenu, m.nome from controle_menu cm
-//    INNER JOIN menu m on m.idMenu = cm.idMenu
-//    /*LEFT JOIN sub_menu s ON s.id_menu = m.id_menu group by m.nome*/
-//    where cm.idUsuario = $_POST[id_usuario]";
-//
-//        $sql=mysql_query($sql,$conexao);
-//
-//        while ($row=mysql_fetch_row($sql)){
-//
-//            $json[] = array(
-//                'id_menu' => $row[0],
-//                'nome' => $row[1],
-//                //'id_submenu' => $row[2]
-//            );
-//        }
-//
-//        echo json_encode($json);
-//        mysql_close($conexao);
-//    }
+        session_start();
+        $conexao= AbreBancoJP();
 
-//    function pesquisarSubMenuUsuario(){
-//
-//        $conexao= AbreBancoJP();
-//
-//        $sql="SELECT idSubmenu from controle_submenu where idUsuario = $_POST[id_usuario]";
-//
-//        $sql=mysql_query($sql,$conexao);
-//
-//        while ($row=mysql_fetch_row($sql)){
-//
-//            $json[] = array(
-//                'id_submenu' => $row[0]
-//            );
-//        }
-//
-//        echo json_encode($json);
+        $sql="SELECT
+                u.idUsuario,
+                u.idOrganizacao,
+                u.idDepartamento,
+                u.nome,
+                u.cpf,
+                u.data_nascimento,
+                u.telefone,
+                u.celular,
+                u.cep,
+                u.endereco,
+                u.numero,
+                u.complemento,
+                u.bairro,
+                u.cidade,
+                u.estado,
+                u.email,
+                u.login,
+                u.senha,
+                u.permissao,
+                u.status,
+                u.idDepartamento,
+                d.nome
+            from 
+                usuarios u,
+                departamento d
+            INNER JOIN 
+                  departamento d on d.idDepartamento = u.idDepartamento
+            where 
+                  (u.nome='$pesquisa'
+            OR 
+                u.telefone='$pesquisa'
+            OR 
+                u.cpf='$pesquisa')
+            and u.status=1 and u.idOrganizacao=". $idOrg ."
+            and d.status=1 and d.idOrganizacao=" .$idOrg;
+
+        $sql=mysql_query($sql, $conexao);
+
+        if(mysql_num_rows($sql) <= 0){
+            echo '0';
+            mysql_close($conexao);
+            return;
+        }
+
+        while($row=mysql_fetch_row($sql)){
+
+            $json[]= array(
+                'id_usuario' => $row['0'],
+                'nome' => $row['3'],
+                'cpf' => $row['4'],
+                'data_nascimento' => $row['5'],
+                'telefone' => $row['6'],
+                'celular' => $row['7'],
+                'cep' => $row['8'],
+                'endereco' => $row['9'],
+                'numero' => $row['10'],
+                'complemento' => $row['11'],
+                'bairro' => $row['12'],
+                'cidade' => $row['13'],
+                'uf' => $row['14'],
+                'email' => $row['15'],
+                'login' => $row['16'],
+                'senha' => $row['17'],
+                'permissao' => $row['18'],
+                'status' => $row['19'],
+                'idDepartamento' => $row['20'],
+                'nomeDepartamento' => $row['21']
+            );
+        }
+
+        return json_encode($json);
+        //mysql_close($conexao);
+    }
+
+    function pesquisarMenuUsuario($idUsuario){
+
+        $conexao= AbreBancoJP();
+
+        $sql="SELECT cm.idMenu, m.nome from controle_menu cm
+    INNER JOIN menu m on m.idMenu = cm.idMenu
+    /*LEFT JOIN sub_menu s ON s.id_menu = m.id_menu group by m.nome*/
+    where cm.idUsuario = ".$idUsuario;
+
+        $sql=mysql_query($sql,$conexao);
+
+        while ($row=mysql_fetch_row($sql)){
+
+            $json[] = array(
+                'id_menu' => $row[0],
+                'nome' => $row[1],
+                //'id_submenu' => $row[2]
+            );
+        }
+
+        return $json;
+        //mysql_close($conexao);
+    }
+
+    function pesquisarSubMenuUsuario($idUsuario){
+
+        $conexao= AbreBancoJP();
+
+        $sql="SELECT idSubmenu from controle_submenu where idUsuario = ".$idUsuario;
+
+        $sql=mysql_query($sql,$conexao);
+
+        while ($row=mysql_fetch_row($sql)){
+
+            $json[] = array(
+                'id_submenu' => $row[0]
+            );
+        }
+
+        return $json;
 //        mysql_close($conexao);
-//    }
+    }
 //
 //
 //
@@ -588,7 +592,7 @@ class UsuarioDao
         $conexao = AbreBancoJP();
 
 
-    $sql = "call USP_SEL_LOGIN('".$login ."', '". md5($senha)."');";
+        $sql = "call USP_SEL_LOGIN('".$login ."', '". md5($senha)."');";
 
         $result = mysql_query($sql, $conexao);
 
@@ -763,7 +767,7 @@ class UsuarioDao
                      </html>";
 
             echo $email->mensagemHTML;
-             $email->Envia();
+            $email->Envia();
             echo 1;
         }else{
             echo 0;
@@ -771,7 +775,7 @@ class UsuarioDao
 
 
 //            $retorno = "1";
-            mysql_close($conexao);
-            return $retorno;
-        }
+        mysql_close($conexao);
+        return $retorno;
     }
+}
