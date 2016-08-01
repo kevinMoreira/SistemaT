@@ -75,8 +75,16 @@ function menu(){
 
     $conexao = AbreBancoJP();
 
-    $sql = "SELECT m.idMenu AS codgrupo, m.nome AS grupo, s.idSubmenu AS codsubgrupo, IFNULL(s.nome, '') AS subgrupo FROM menu AS m
-            LEFT JOIN sub_menu AS s ON s.idMenu = m.idMenu group by m.nome";
+    $sql = "
+        SELECT 
+            m.idMenu AS codgrupo, 
+            m.nome AS grupo, 
+            s.idSubmenu AS codsubgrupo, 
+            IFNULL(s.nome, '') AS subgrupo 
+        FROM 
+            menu AS m
+            LEFT JOIN sub_menu AS s ON s.idMenu = m.idMenu 
+        group by m.nome";
 
     $Tb = mysql_query($sql, $conexao);
 

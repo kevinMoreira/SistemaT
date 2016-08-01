@@ -38,7 +38,7 @@ function Pesquisar(){
 
         ajax.Request(p);
 
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
 
         if(ajax.getResponseText()==0){
             alert("Inexistente!");
@@ -68,9 +68,9 @@ function Excluir(){
         var ajax = new Ajax('POST', './php/Neg/CategoriaNeg.php', false);
         var p='action=excluir';
         p+='&idCategoria=' + idCategoria;
-        alert(p);
+        // alert(p);
         ajax.Request(p);
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         alert("Excluído com sucesso!");
         Cancelar();
     }else{
@@ -147,11 +147,11 @@ function Salvar(){
     p+='&nome=' + nome;
     p+='&tipo=' + tipo;
 
-    alert(p);
+    // alert(p);
     if(confirm("Deseja salvar?")){
         ajax.Request(p);
 
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
 
 
         Cancelar();
@@ -174,9 +174,9 @@ function Update(){
         p+='&nome=' + nome;
         p+='&tipo=' + tipo;
         //alert(tipo);
-        alert(p);
+        // alert(p);
         ajax.Request(p);
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         Cancelar();
         alert("Atualizado com sucesso!");
     }
@@ -190,7 +190,7 @@ function carregarComboBoxTipo(){
 
     ajax.Request(p);
 
-     alert(ajax.getResponseText());
+     // alert(ajax.getResponseText());
 
     if(ajax.getResponseText() != '0'){
         var json = JSON.parse(ajax.getResponseText());

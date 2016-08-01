@@ -3,22 +3,20 @@ window.onload = function () {
     VerificaSessao();
     getDadosUsuario();
     MontaMenu();
-    Mask.setCPF(document.getElementById('cpf'));
-    Menu();
     Desabilitar(true);
+    Menu();
     carregaDep();
 };
 
 function carregaDep() {
     var combo = document.getElementById('departamento');
+
     var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
     var p = 'action=carregaDep';
 
     ajax.Request(p);
-    // alert(ajax.getResponseText());
-    var json = JSON.parse(ajax.getResponseText());
 
-    //alert(ajax.getResponseText());return;
+    var json = JSON.parse(ajax.getResponseText());
 
     combo.options[0] = new Option("SELECIONE");
 
@@ -44,8 +42,8 @@ function MudaStatus() {
 
 function Menu() {
 
-    var ajax = new Ajax('POST', 'php/cadastro-de-usuarios.php', false);
-    // var ajax = new Ajax('POST', 'php/Neg/UsuarioNeg.php', false);
+    // var ajax = new Ajax('POST', 'php/cadastro-de-usuarios.php', false);
+    var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
     var p = 'action=menu';
 
     ajax.Request(p);
@@ -55,7 +53,7 @@ function Menu() {
     var json2;
 
     var menu = document.getElementById('permissoes');//seleciona div
-    alert(menu);
+
     for (var i = 0; i < json.length; i++) {
 
         var checkbox = DOM.newElement('input', json[i].id_menu);
@@ -72,7 +70,8 @@ function Menu() {
 
         if (json[i].id_submenu !== null) {//verifica se há submenu para não ficar criando header nos cliques
 
-            var ajax2 = new Ajax('POST', 'php/cadastro-de-usuarios.php', false);
+            // var ajax2 = new Ajax('POST', 'php/cadastro-de-usuarios.php', false);
+            var ajax2 = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
 
             var q = 'action=subMenu';
 
@@ -132,12 +131,11 @@ function Pesquisar() {
         p += '&pesq=' + pesq;
 
         ajax.Request(p);
-        //alert(ajax.getResponseText());
         if (ajax.getResponseText() == 0) {
             alert("Inexistente!");
             return;
         }
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         var json = JSON.parse(ajax.getResponseText());
         var combo = document.getElementById('departamento');
 
@@ -168,13 +166,13 @@ function Pesquisar() {
 
         var r = 'action=pesquisarSubMenuUsuario';
         r += '&id_usuario=' + json.idUsuario;
-        alert(r);
+        // alert(r);
         ajax.Request(q);
 
         json = JSON.parse(ajax.getResponseText());
-        // alert(ajax.getResponseText());
+   
         document.getElementById('permissoes').setAttribute('style', 'display:block');
-        alert(r);
+        // alert(r);
         var chk = document.getElementsByName('item');
         var x='action=menu';
         ajax.Request(x);
@@ -196,13 +194,12 @@ function Pesquisar() {
         ajax.Request(r);
 
         json = JSON.parse(ajax.getResponseText());
-        alert(json);
+        // alert(json);
         var chk2 = document.getElementsByName('sub_item');
-        alert("Valor json"+json[0]);
+        // alert("Valor json"+json[0]);
         for (var i = 0; i < json.length; i++) {
             for (var j = 0; j < chk2.length; j++) {
-              //  alert(json[j].id_submenu);
-                //   alert(json.id_submenu + "==" + chk2[j].id);
+              
                 if (json[i].id_submenu == chk2[j].id)
                     chk2[j].checked = true;
             }
@@ -329,8 +326,8 @@ function Cancelar() {
 
 function Salvar() {
 
-    // var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
-    var ajax = new Ajax('POST', './php/cadastro-de-usuarios.php', false);
+    var ajax = new Ajax('POST', './php/Neg/UsuarioNeg.php', false);
+    // var ajax = new Ajax('POST', './php/cadastro-de-usuarios.php', false);
     var nome = document.getElementById('nome').value;
     var departamento = document.getElementById('departamento').value;
     var cpf = document.getElementById('cpf').value;
@@ -405,7 +402,7 @@ function Salvar() {
     if (confirm("Deseja salvar?")) {
         ajax.Request(p);
         ajax.Request(q);
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         Cancelar();
         alert("Gravado com sucesso!");
     }
@@ -490,11 +487,11 @@ function Update() {
         q += '&subMenu=' + subMenu;//Envia vetor com as opções de permissão do usuário
         q += '&id_usuario=' + id_usuario;
         ajax.Request(p);
-        alert(p);
+        // alert(p);
         ajax.Request(q);
-        alert(q);
+        // alert(q);
         Cancelar();
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         window.location = 'cadastro-de-usuarios.html';
 
         alert("Atualizado com sucesso!");

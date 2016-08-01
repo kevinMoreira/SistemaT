@@ -34,7 +34,7 @@ function Login() {
       
     if (!ajax.isStateOK())
         return;
-
+// alert(ajax.getResponseText());
     if (ajax.getResponseText() == '0') {
         $JQuery("#foo").hide();
         alert("Usuário e/ou senha incorretos.");

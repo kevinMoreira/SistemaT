@@ -95,15 +95,7 @@ if (isset($_POST['action'])){
             break;
 
         case 'salvarUsuario':
-
             $teste = $objUsuarioNeg->Salvar($objUsuarioEnt);
-
-            echo $teste;
-            break;
-
-        case 'salvarMenu':
-            session_start();
-            $teste = $objUsuarioNeg->SalvarMenu($_SESSION['idOrganizacao'] ,$_POST['menu'],$_POST['subMenu']);
             echo $teste;
             break;
 
@@ -120,13 +112,6 @@ if (isset($_POST['action'])){
             $json = json_encode($var);
             echo $json;
             break;
-
-
-//        case 'editarUsuario':
-//            $teste= $objUsuarioNeg->Atualizar($objUsuarioEnt);
-//            echo $teste;
-//            break;
-
 
         case 'editarUsuario':
             $teste= $objUsuarioNeg->Atualizar(
@@ -168,37 +153,45 @@ if (isset($_POST['action'])){
             echo $teste;
             break;
 
-        case 'subMenu':
-            $objUsuarioNeg->subMenu() ;
+         case 'menu':
+            $menu = $objUsuarioNeg->menu() ;
+            $json = json_encode($menu);
+            echo $json;
             break;
 
-
+        case 'subMenu':
+            $submenu = $objUsuarioNeg->subMenu($_POST['id_menu']) ;
+            $json = json_encode($submenu);
+            echo $json;
+            break;
 
         case 'salvarMenu':
-            $objUsuarioNeg->salvarMenu($_SESSION['idOrganizacao'], $_POST['menu'], $_POST['subMenu']);
-
+            $objUsuarioNeg->salvarMenu($_POST['menu'], $_POST['subMenu']);
             break;
 
+         case 'editarMenu':
+             $objUsuarioNeg->EditarMenu($_POST['menu'], $_POST['subMenu']);
+            break;
 
         case 'Gravar':
-
             $teste = $objUsuarioNeg->Gravar($objUsuarioEnt,$_POST["txtEstabelecimento"]);
             echo $teste;
             break;
-
-
     }
 }
 
-
-
 class UsuarioNeg
 {
+
+    public function editarMenu($menu, $submenu){
+        $UsuarioDao = new UsuarioDao();
+        return $UsuarioDao->EditarMenu($menu, $submenu);
+    }
+
     public function CarregarComboBox(){
         $UsuarioDao = new UsuarioDao();
         return $UsuarioDao->CarregarComboBox();
     }
-
 
     public function Obter($pesq,$idOrganizacao){
         $UsuarioDao = new UsuarioDao();
@@ -211,12 +204,6 @@ class UsuarioNeg
         return $UsuarioDao->Salvar($objUsuario);
 
     }
-
-//    public function Atualizar(Usuario $objUsuario){
-//        $UsuarioDao = new UsuarioDao();
-//        return $UsuarioDao->Atualizar($objUsuario);
-//    }
-
 
     public function Atualizar($nome,$cpf,$data_nascimento
         ,$telefone,$celular, $email, $cep, $endereco,
@@ -247,25 +234,20 @@ class UsuarioNeg
         return $UsuarioDao->Excluir($id);
     }
 
-//    public function Excluir($valor){
-//        $UsuarioDao = new UsuarioDao();
-//        return $UsuarioDao->Excluir($valor);
-//    }
-
-
-    public function SalvarMenu($idOrg, $menu, $submenu){
+    public function SalvarMenu($menu, $submenu){
         $UsuarioDao = new UsuarioDao();
-
-        return $UsuarioDao->SalvarMenu($idOrg, $menu, $submenu);
-
+        return $UsuarioDao->SalvarMenu($menu, $submenu);
     }
 
-    public function subMenu(){
+    public function menu(){
         $UsuarioDao = new UsuarioDao();
-        $UsuarioDao->subMenu();
+        return $UsuarioDao->menu();
     }
 
-
+    public function subMenu($id_menu){
+        $UsuarioDao = new UsuarioDao();
+        return $UsuarioDao->subMenu($id_menu);
+    }
 
     public function Login($login,$senha){
         $UsuarioDao = new UsuarioDao();
@@ -273,19 +255,11 @@ class UsuarioNeg
 
     }
 
-
-//    public function SalvarMenu($menu,$subMenu){
-//        $UsuarioDao = new UsuarioDao();
-//        return  $UsuarioDao->SalvarMenu($menu,$subMenu);
-//    }
-
-
     public function Gravar(Usuario $objUsuario, $estabelecimento){
         $UsuarioDao = new UsuarioDao();
         return $UsuarioDao->Gravar($objUsuario, $estabelecimento);
 
     }
-
 
     public function pesquisarMenu($idUsurio){
         $UsurioDao = new UsuarioDao();

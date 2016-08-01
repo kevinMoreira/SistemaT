@@ -25,21 +25,22 @@ class ProdutoDao{
 				`produto`.`valorVenda`,
 				`produto`.`status`,
 				`produto`.`CodigoDeBarras`,
-                sc.idSuperCategorias as tipo,
+				'',
+                -- sc.idSuperCategorias as tipo,
                 `produto`.`QuantidadeMinima`,
 				`produto`.`DataMinimaAvisoVencimento`		
 				
 			FROM 
 				`produto` as produto
 				inner join categoria as cat on cat.idCategoria =produto.idCategoria
-				inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
-				inner join SuperCategorias as sc on sc.idSuperCategorias = scc.superCategoriaId
+				-- inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
+				-- inner join SuperCategorias as sc on sc.idSuperCategorias = scc.superCategoriaId
 			WHERE 
 				`produto`.status=1
 			and 
 				(`produto`.nome = '".$pesq."'
 			OR 
-				`produto`.idProduto = '".$pesq."')
+				`produto`.idProduto = ".$pesq.")
 			AND
 				`produto`.idOrganizacao = ".$_SESSION['idOrganizacao'];
 
@@ -57,7 +58,7 @@ class ProdutoDao{
 			$objProduto->setValor($row[3]);
 			$objProduto->setStatus($row[4]);
 			$objProduto->setCodigoBarras($row[5]);
-			$objProduto->setTipo($row[6]);
+			// $objProduto->setTipo($row[6]);
 			$objProduto->setQuantidadeMinima($row[7]);
 			$objProduto->setDataMinimaAlertaVencimento($row[8]);
 
@@ -86,7 +87,8 @@ class ProdutoDao{
 			`quantidadeMinima`,
 			`DataMinimaAvisoVencimento`,
 
-			`CodigoDeBarras`
+			`CodigoDeBarras`,
+			CadastroUsuarioId
 		)
 		VALUES
 		(
@@ -100,7 +102,8 @@ class ProdutoDao{
 			".$produto->getQuantidadeMinima().",
 			".$produto->getDataMinimaAlertaVencimento().",
 
-			'".$produto->getCodigoBarras()."'
+			'".$produto->getCodigoBarras()."',
+			".$_SESSION["codUsuario"]."
 		);
 ";
 
