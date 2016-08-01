@@ -81,7 +81,7 @@ function obterProximosDoVencimento(){
             inner join produto as prod on prod.`idProduto` = lote.`idProduto`
             inner join categoria as cat on cat.idCategoria = prod.idCategoria
             inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
-            inner join SuperCategoria as sc on sc.idSuperCategorias = scc.superCategoriaId
+            inner join SuperCategorias as sc on sc.idSuperCategorias = scc.superCategoriaId
         where           
            lote.`validade` between now() and DATE_ADD(now(),INTERVAL ifnull(prod.DataMinimaAvisoVencimento, sc.DataMinimaAvisoVencimento) day)
             and lote.status = 1
@@ -125,23 +125,20 @@ function obterQuantidadeChegandoAoFim(){
             ( 
                 SELECT 
                     lote.`idProduto`,
-                    /*prod.nome,*/
                     sum(lotebaixa.`Quantidade`) as qtde
                 FROM 
                     `loteprodutos` as lote
                     inner join `loteprodutosbaixa` as lotebaixa on lotebaixa.`LoteProdutosId` = lote.`idLote`
-                    /*inner join produto as prod on prod.`idProduto` = lote.`idProduto`*/
                 where
                     lote.status = 1
                     and lotebaixa.`FlagStatus` = 1
-                    /*and prod.`status` = 1*/
                     and lote.`idOrganizacao` = ".$_SESSION["idOrganizacao"]."
                     group by lote.`idProduto`
             ) as a 
             inner join produto as produ on produ.idProduto = a.idProduto
             inner join categoria as cat on cat.idCategoria = produ.idCategoria
             inner join SuperCategoriasCategorias as scc on scc.categoriaId = cat.idCategoria
-            inner join SuperCategoria as sc on sc.idSuperCategorias = scc.superCategoriaId
+            inner join SuperCategorias as sc on sc.idSuperCategorias = scc.superCategoriaId
         where
             a.qtde < ifnull(produ.QuantidadeMinima, sc.QuantidadeMinima)";
 

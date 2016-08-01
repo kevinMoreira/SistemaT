@@ -8,10 +8,7 @@
 
 include '../sistemaJP.php';
 require_once('../Ent/Usuario.php');
-
-//require_once("../config.php");
 require_once("../Mail.php");
-//require_once("../MySQL.php");
 
 class UsuarioDao
 {
@@ -75,7 +72,7 @@ class UsuarioDao
             return 0;
         }
 
-//        while ($row = mysql_fetch_row($sql)) {
+
         while ($row = mysql_fetch_array($sql)) {
 
             $objUsuarioEnt->setNome($row['nome']);
@@ -145,7 +142,7 @@ class UsuarioDao
     {
         session_start();
         $conexao=AbreBancoJP();
-        // echo "<script>alert($_SESSION[idOrganizacao]);</script>";
+        
         $sql="INSERT INTO `usuarios`
 		(
 	
@@ -170,7 +167,9 @@ class UsuarioDao
             `endereco`,
             `bairro`,
             `cidade`,
-            `estado`
+            `estado`,
+            FlagAtivacaoToken,
+            permissao
        
 		)
         VALUES
@@ -189,7 +188,7 @@ class UsuarioDao
             '".$objUsuario->getNumero()."',
 			1,
 			current_timestamp(),
-			'".$objUsuario->getIdUsuario()."',
+			".$_SESSION['codUsuario'].",
 			NULL,
 			NULL,
             '".$objUsuario->getLogin()."',
@@ -197,9 +196,9 @@ class UsuarioDao
             '".$objUsuario->getEndereco()."',
             '".$objUsuario->getBairo()."',
             '".$objUsuario->getCidade()."',
-            '".$objUsuario->getEstado()."'
-      
-            
+            '".$objUsuario->getEstado()."',
+            1,
+            2
         );
 ";
 
@@ -210,22 +209,25 @@ class UsuarioDao
         return $retorno;
     }
 
-    public function Atualizar($nome,
-                              $cpf,
-                              $data_nascimento,
-                              $telefone,
-                              $celular,
-                              $email,
-                              $cep,
-                              $endereco,
-                              $numero,
-                              $complemento,
-                              $bairro,
-                              $cidade,
-                              $uf,
-                              $login,
-                              $senha,
-                              $status
+    public function Atualizar
+    (
+        $nome,
+        $cpf,
+        $data_nascimento,
+        $telefone,
+        $celular,
+        $email,
+        $cep,
+        $endereco,
+        $numero,
+        $complemento,
+        $bairro,
+        $cidade,
+        $uf,
+        $login,
+        $senha,
+        $status,
+        $idUsuario
     )
     {
         session_start();
@@ -246,7 +248,7 @@ class UsuarioDao
             `numero` = '".$numero."',
 			`status`=1,
 			`AtualizacaoDataHora` = current_timestamp(),
-		--	`AtualizacaoUsuarioId` = 1
+			`AtualizacaoUsuarioId` = ".$_SESSION['codUsuario'].",
           --  `login` = '".$login."',
          --   `senha` = '".$senha."',
             `endereco` = '".$endereco."',
@@ -255,41 +257,9 @@ class UsuarioDao
             `estado` = '".$uf."'
 		
 		WHERE
-			`login` = '".$login."'
+			idUsuario = ".$idUsuario."
 		AND
 			`idOrganizacao`= ".$_SESSION['idOrganizacao'];
-
-
-//        $sql="UPDATE
-//			usuarios
-//		SET
-//			`telefone` = '".$objUsuario->getTelefone()."'
-//			--`celular` = '".$objUsuario->getCelular()."'
-//            -- `idDepartamento` = ".$objUsuario->getIdDepartamento().",
-//			-- `email` = '".$objUsuario->getEmail()."',
-//			-- `cep` =  '".$objUsuario->getCep()."',
-//           -- `numero` =  '".$objUsuario->getNumero()."',
-//          --  `complemento` = '".$objUsuario->getComplemento()."',
-//		-- `AtualizacaoDataHora` = current_timestamp(),
-//			-- `AtualizacaoUsuarioId` = ".$objUsuario->getIdUsuario().",
-//			-- parte adicionada
-//			/*
-//			`login` = '".$objUsuario->getLogin()."',
-//            `senha` = '".$objUsuario->getSenha()."',
-//            `endereco` = '".$objUsuario->getEndereco()."',
-//            `bairro` =  '".$objUsuario->getBairo()."',
-//            `cidade` = '".$objUsuario->getCidade()."',
-//            `estado` = '".$objUsuario->getEstado()."',
-//            `nome` = '".$objUsuario->getNome()."',
-//			`cpf` = '".$objUsuario->getCpf()."',
-//			`data_nascimento` = '".$objUsuario->getDataNasc()."'
-//		*/
-//		WHERE
-//			`idUsuario` = ".$objUsuario->getIdUsuario()."
-//
-//		 AND
-//			`idOrganizacao`= $_SESSION[idOrganizacao]";
-
 
         mysql_query($sql, $conexao);
         $retorno = "1";
@@ -308,7 +278,7 @@ class UsuarioDao
 		SET
 			`status` = 0,
 			`AtualizacaoDataHora` = current_timestamp(),
-            `AtualizacaoUsuarioId` =".$id." 
+            `AtualizacaoUsuarioId` =".$_SESSION['codUsuario']." 
 		WHERE
 			`idUsuario` = ".$id."
 		AND
@@ -323,111 +293,61 @@ class UsuarioDao
 
 
 
-//    function menu(){
-//
-//        $conexao = AbreBancoJP();
-//
-//        $sql = "SELECT m.idMenu AS codgrupo, m.nome AS grupo, s.idSubmenu AS codsubgrupo, IFNULL(s.nome, '') AS subgrupo FROM menu AS m
-//            LEFT JOIN sub_menu AS s ON s.idMenu = m.idMenu group by m.nome";
-//
-//        $Tb = mysql_query($sql, $conexao);
-//
-//        if(mysql_num_rows($Tb) <= 0){
-//            echo '0';
-//            mysql_close($conexao);
-//            return;
-//        }
-//
-//        while($linha = mysql_fetch_assoc($Tb)){
-//
-//            $json[] = array(
-//                'id_menu' => $linha['codgrupo'],
-//                'nome_menu' => $linha['grupo'],
-//                'id_submenu' => $linha['codsubgrupo']
-//            );
-//        }
-//
-//        echo json_encode($json);
-//        mysql_close($conexao);
-//
-//    }
+function menu(){
 
-    function subMenu($idMenu){
-        $conexao = AbreBancoJP();
+    $conexao = AbreBancoJP();
 
-        $query = "SELECT s.nome, s.idSubmenu FROM sub_menu s where s.idMenu=" . $idMenu;
+    $sql = "
+        SELECT 
+            m.idMenu AS codgrupo, 
+            m.nome AS grupo, 
+            s.idSubmenu AS codsubgrupo, 
+            IFNULL(s.nome, '') AS subgrupo 
+        FROM 
+            menu AS m
+            LEFT JOIN sub_menu AS s ON s.idMenu = m.idMenu 
+        group by m.nome";
 
-        $query = mysql_query($query, $conexao);
+    $Tb = mysql_query($sql, $conexao);
 
-        while($row=mysql_fetch_row($query)){
-
-            $json[] = array(
-                'id_submenu' => $row['1'],
-                'nome_submenu' => $row['0'],
-                //'id_menu' => $_POST['id_menu']//teste
-            );
-        }
-        echo json_encode($json);
+    if(mysql_num_rows($Tb) <= 0){
+        echo '0';
         mysql_close($conexao);
+        return;
     }
 
+    while($linha = mysql_fetch_assoc($Tb)){
 
-//    public function Excluir($id)
-//    {
-//        session_start();
-//        $conexao=AbreBancoJP();
-//
-//
-//        $sql="	UPDATE
-//			`usuarios`
-//		SET
-//			`status` = 0,
-//			`AtualizacaoDataHora` = current_timestamp()
-//
-//		WHERE
-//
-//			  `idUsuario` = ".$id.";";
-//
-//        mysql_query($sql, $conexao);
-//
-//
-//        $retorno = "1";
-//        mysql_close($conexao);
-//        return $retorno;
-//    }
-
-
-
-    function salvarMenu($idOrg, $menu, $submenu){
-
-        $conexao = AbreBancoJP();
-
-        $sql="SELECT idUsuario FROM usuarios where status=1 and idOrganizacao=". $idOrg ." ORDER BY idUsuario DESC LIMIT 1";
-        $sql=mysql_query($sql,$conexao);
-        $lastIdUsr=mysql_fetch_row($sql);
-//        $menu=$_POST['menu'];
-//        $submenu=$_POST['subMenu'];
-        $menu = explode(',', $menu);
-        $submenu = explode(',', $submenu);
-
-        for($i=0; $i < sizeof($menu); $i++){
-
-            $sql="insert into controle_menu values ('',$lastIdUsr[0],$menu[$i], $idOrg)";
-            mysql_query($sql,$conexao);
-
-        }
-
-        for($i=0; $i < sizeof($submenu); $i++){
-
-            $sql="insert into controle_submenu values ('',$lastIdUsr[0],$submenu[$i], $idOrg)";
-            mysql_query($sql,$conexao);
-
-        }
-        $retorno= $sql;
-        return $retorno;
-
-        mysql_close($conexao);
+        $json[] = array(
+            'id_menu' => $linha['codgrupo'],
+            'nome_menu' => $linha['grupo'],
+            'id_submenu' => $linha['codsubgrupo']
+        );
     }
+
+    mysql_close($conexao);
+
+    return $json;
+}
+
+function subMenu($id_menu){
+    $conexao = AbreBancoJP();
+
+    $query = "SELECT s.nome, s.idSubmenu FROM sub_menu s where s.idMenu=" . $id_menu;
+
+    $query = mysql_query($query, $conexao);
+
+    while($row=mysql_fetch_row($query)){
+
+        $json[] = array(
+            'id_submenu' => $row['1'],
+            'nome_submenu' => $row['0']
+        );
+    }
+    
+    mysql_close($conexao);
+    return $json;
+}
 
     function pesquisarUsuario($pesquisa, $idOrg){
 
@@ -504,9 +424,8 @@ class UsuarioDao
                 'nomeDepartamento' => $row['21']
             );
         }
-
+        mysql_close($conexao);
         return json_encode($json);
-        //mysql_close($conexao);
     }
 
     function pesquisarMenuUsuario($idUsuario){
@@ -528,9 +447,9 @@ class UsuarioDao
                 //'id_submenu' => $row[2]
             );
         }
-
+        
+        mysql_close($conexao);
         return $json;
-        //mysql_close($conexao);
     }
 
     function pesquisarSubMenuUsuario($idUsuario){
@@ -547,43 +466,9 @@ class UsuarioDao
                 'id_submenu' => $row[0]
             );
         }
-
+        mysql_close($conexao);
         return $json;
-//        mysql_close($conexao);
     }
-//
-//
-//
-//    function editarMenu()
-//    {
-//
-//        session_start();
-//        $conexao = AbreBancoJP();
-//        $menu = $_POST['menu'];
-//        $submenu = $_POST['subMenu'];
-//        $menu = explode(',', $menu);
-//        $submenu = explode(',', $submenu);
-//        $sql = "DELETE FROM controle_menu WHERE idUsuario = $_POST[id_usuario] and idOrganizacao=" . $_SESSION['idOrganizacao'];
-//        mysql_query($sql, $conexao);
-//
-//        $sql = "DELETE FROM controle_submenu WHERE idUsuario = $_POST[id_usuario] and idOrganizacao=" . $_SESSION['idOrganizacao'];
-//        mysql_query($sql, $conexao);
-//
-//        for ($i = 0; $i < sizeof($menu); $i++) {
-//
-//            $sql = "INSERT into controle_menu values ('', $_POST[id_usuario], $menu[$i], $_SESSION[idOrganizacao])";
-//            mysql_query($sql, $conexao);
-//
-//        }
-//
-//        for ($i = 0; $i < sizeof($submenu); $i++) {
-//
-//            $sql = "INSERT into controle_submenu values ('', $_POST[id_usuario],$submenu[$i], $_SESSION[idOrganizacao])";
-//            mysql_query($sql, $conexao);
-//
-//        }
-//        mysql_close($conexao);
-//    }
 
 
     public function Login($login,$senha)
@@ -616,47 +501,72 @@ class UsuarioDao
         }
         mysql_close($conexao);
     }
-    //Cadastrando menus
+  
 
-//    public function SalvarMenu($menu,$submenu){
-//        session_start();
-//        $conexao = AbreBancoJP();
-//
-//        $sql="SELECT idUsuario FROM usuarios where status=1 and idOrganizacao=". $_SESSION['idOrganizacao'] ." ORDER BY idUsuario DESC LIMIT 1";
-//        $sql=mysql_query($sql,$conexao);
-//        $lastIdUsr=mysql_fetch_row($sql);
-//
-//
-//        $menu = explode(',', $menu);
-//        $submenu = explode(',', $submenu);
-//
-//        for($i=0; $i < sizeof($menu); $i++){
-//
-//            $sql="insert into controle_menu values ('',$lastIdUsr[0],$menu[$i], $_SESSION[idOrganizacao])";
-//            mysql_query($sql,$conexao);
-//
-//        }
-//
-//        for($i=0; $i < sizeof($submenu); $i++){
-//
-//            $sql="insert into controle_submenu values ('',$lastIdUsr[0],$submenu[$i], $_SESSION[idOrganizacao])";
-//            mysql_query($sql,$conexao);
-//
-//        }
-//
-//        mysql_close($conexao);
-//
-//    }
+    function salvarMenu($menu, $submenu){
+
+        session_start();
+        $conexao = AbreBancoJP();
+
+        $sql="SELECT idUsuario FROM usuarios where status=1 and idOrganizacao=". $_SESSION['idOrganizacao'] ." ORDER BY idUsuario DESC LIMIT 1";
+        $sql=mysql_query($sql,$conexao);
+        $lastIdUsr=mysql_fetch_row($sql);
+        // $menu=$_POST['menu'];
+        // $submenu=$_POST['subMenu'];
+        $menu = explode(',', $menu);
+        $submenu = explode(',', $submenu);
+
+        for($i=0; $i < sizeof($menu); $i++){
+
+            $sql="insert into controle_menu (idUsuario, idMenu, idOrganizacao) values ($lastIdUsr[0],$menu[$i], $_SESSION[idOrganizacao])";
+            mysql_query($sql,$conexao);
+
+        }
+
+        for($i=0; $i < sizeof($submenu); $i++){
+
+            $sql="insert into controle_submenu (idUsuario, idSubMenu, idOrganizacao) values ($lastIdUsr[0],$submenu[$i], $_SESSION[idOrganizacao])";
+            mysql_query($sql,$conexao);
+
+        }
+
+        mysql_close($conexao);
+    }
 
 
+    function EditarMenu($menu, $submenu){
 
-//gravando o usuarios
+        session_start();
+        $conexao = AbreBancoJP();
+        // $menu=$_POST['menu'];
+        // $submenu=$_POST['subMenu'];
+        $menu = explode(',', $menu);
+        $submenu = explode(',', $submenu);
+        $sql="DELETE FROM controle_menu WHERE idUsuario = $_POST[id_usuario] and idOrganizacao=" .$_SESSION['idOrganizacao'];
+        mysql_query($sql,$conexao);
 
+        $sql="DELETE FROM controle_submenu WHERE idUsuario = $_POST[id_usuario] and idOrganizacao=" .$_SESSION['idOrganizacao'];
+        mysql_query($sql,$conexao);
+
+        for($i=0; $i < sizeof($menu); $i++){
+
+            $sql="INSERT into controle_menu values ('', $_POST[id_usuario], $menu[$i], $_SESSION[idOrganizacao])";
+            mysql_query($sql,$conexao);
+
+        }
+
+        for($i=0; $i < sizeof($submenu); $i++){
+
+            $sql="INSERT into controle_submenu values ('', $_POST[id_usuario],$submenu[$i], $_SESSION[idOrganizacao])";
+            mysql_query($sql,$conexao);
+
+        }
+        mysql_close($conexao);
+    }
 
     public  function Gravar(Usuario $objUsuario, $estabelecimento)
     {
         session_start();
-//        $conexao = new MySQL();
         $conexao = AbreBancoJP();
         $sql = " INSERT INTO organizacao
 		(
@@ -708,10 +618,6 @@ class UsuarioDao
 		);";
 
         $retorno=mysql_query($sql, $conexao);
-//        mysql_query($sql, $conexao);
-
-//        $retorno = $conexao->execSP($sql);
-
 
         if ($retorno[0] != '0') {
             $email = new Mail();
@@ -773,8 +679,6 @@ class UsuarioDao
             echo 0;
         }
 
-
-//            $retorno = "1";
         mysql_close($conexao);
         return $retorno;
     }

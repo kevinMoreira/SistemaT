@@ -37,8 +37,8 @@ function Pesquisar(){
         p+='&pesq=' + pesq;
 
         ajax.Request(p);
-        alert(p);
-        alert(ajax.getResponseText());
+        // alert(p);
+        // alert(ajax.getResponseText());
         if(ajax.getResponseText()==0){
 
 
@@ -71,11 +71,11 @@ function Excluir(){
 
         var p='action=excluir';
         p+='&produtoId=' + produtoId;
-        alert(p);
+        // alert(p);
         ajax.Request(p);
 
         alert("Excluído com sucesso!");
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         Cancelar();
     }else{
         alert("Ufa... Foi por pouco!");
@@ -181,11 +181,11 @@ function Salvar(){
     // p+='&tipo=' + tipo;
     p+='&quantidadeMinima=' + quantidadeMinima;
     p+='&dataMinimaAlertaVencimento=' + dataMinimaAlertaVencimento;
-  alert(p);
+  // alert(p);
     if(confirm("Deseja salvar?")){
 
         ajax.Request(p);
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         Cancelar();
         alert("Gravado com sucesso!");
     }
@@ -217,9 +217,9 @@ function Update(){
         // p+='&tipo=' + tipo;
         p+='&quantidadeMinima=' + quantidadeMinima;
         p+='&dataMinimaAlertaVencimento=' + dataMinimaAlertaVencimento;
-        alert(p);
+        // alert(p);
         ajax.Request(p);
-        alert(ajax.getResponseText());
+        // alert(ajax.getResponseText());
         Cancelar();
         alert("Atualizado com sucesso!");
     }
@@ -230,7 +230,7 @@ function carregarComboBox(){
     var combo = document.getElementById('categoria');
     var ajax = new Ajax('POST', './php/Neg/ProdutoNeg.php', false);
     var p='action=carregarComboBox';
-    alert(p);
+    // alert(p);
     ajax.Request(p);
 
 
@@ -245,23 +245,4 @@ function carregarComboBox(){
         combo.options[0] = new Option ("CADASTRE UMA CATEGORIA");
     }
 }
-
-// function carregarComboBoxTipo(){
-
-//     var combo = document.getElementById('tipo');
-//     var ajax = new Ajax('POST', './php/Neg/ProdutoNeg.php', false);
-//     var p='action=carregarComboBoxTipo';
-
-//     ajax.Request(p);
-
-//     if(ajax.getResponseText() != '0'){
-//         var json = JSON.parse(ajax.getResponseText());
-//         combo.options[0] = new Option ("SELECIONE");
-//         for (var i = 0; i < json.length; i++) {
-//             combo.options[i+1] = new Option (json[i].nome, json[i].idSuperCategorias);
-//         }
-//     }else{
-//         combo.options[0] = new Option ("SELECIONE");
-//     }
-// }
 
