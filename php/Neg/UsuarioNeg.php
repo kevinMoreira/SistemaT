@@ -169,8 +169,10 @@ if (isset($_POST['action'])){
             $objUsuarioNeg->salvarMenu($_POST['menu'], $_POST['subMenu']);
             break;
 
-         case 'editarMenu':
-             $objUsuarioNeg->EditarMenu($_POST['menu'], $_POST['subMenu']);
+        case 'editarMenu':
+            session_start();
+            $teste= $objUsuarioNeg->editarMenu($_POST['id_usuario'],$_SESSION['idOrganizacao'], $_POST['menu'], $_POST['subMenu']);
+            echo $teste;
             break;
 
         case 'Gravar':
@@ -183,9 +185,9 @@ if (isset($_POST['action'])){
 class UsuarioNeg
 {
 
-    public function editarMenu($menu, $submenu){
-        $UsuarioDao = new UsuarioDao();
-        return $UsuarioDao->EditarMenu($menu, $submenu);
+     public function editarMenu($idUsuario,$idOrganizacao,$menu,$submenu){
+        $UsurioDao = new UsuarioDao();
+        return $UsurioDao->editarMenu($idUsuario,$idOrganizacao,$menu,$submenu);
     }
 
     public function CarregarComboBox(){
